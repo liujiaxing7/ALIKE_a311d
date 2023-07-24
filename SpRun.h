@@ -67,6 +67,7 @@ protected:
     long long WFeature;
     int cell = 8;
     double conf_thresh;
+    int topk;
 
     long long **pts_save;
     double *score_save;

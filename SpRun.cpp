@@ -25,6 +25,7 @@ SpRun::SpRun()
         : conf_thresh(0.05f)
           , nms_dist(4)
           , border(4)
+          , topk(-1)
 {
 }
 
@@ -260,10 +261,21 @@ void SpRun::nms_fast(const Points &input, Points &output)
         }
     }
 
-    corners.erase(std::remove_if(corners.begin(), corners.end(), [this](FeaturePoint &p1)
-    { return p1.confidence < this->conf_thresh; }), corners.end());
+    if (topk > 0)
+    {
+        std::sort(corners.begin(), corners.end(), [](FeaturePoint &p1, FeaturePoint &p2)
+        { return p1.confidence > p2.confidence; });
+        Points cornersTopk(corners.begin(), corners.begin() + topk);
+        std::swap(output, cornersTopk);
+    }
+    else
+    {
+        corners.erase(std::remove_if(corners.begin(), corners.end(), [this](FeaturePoint &p1)
+        { return p1.confidence < this->conf_thresh; }), corners.end());
+        std::swap(output, corners);
+    }
 
-    std::swap(output, corners);
+
 };
 
 

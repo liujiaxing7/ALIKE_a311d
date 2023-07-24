@@ -385,9 +385,10 @@ vsi_status vnn_PreProcessNeuralNetworkSuperpoint(vsi_nn_graph_t *graph, cv::Mat 
     cv::Mat dst_gray;
     dst_gray = dst;
 
-
+    Timer timer;
     _load_input_meta();
     vsi_status status = UploadTensor(graph, dst_gray.data);
+    timer.Timing("UploadTensor", true);
 
     TEST_CHECK_STATUS(status, final);
 
